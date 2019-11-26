@@ -2,6 +2,8 @@
 title: "iPhone or iGo (to the Gym)"
 author: "Griffin Barich"
 date: "12/10/19"
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "Reports") })
 output:
   powerpoint_presentation: default
   ioslides_presentation: default

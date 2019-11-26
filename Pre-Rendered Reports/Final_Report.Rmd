@@ -1,6 +1,8 @@
 ---
 title: "Final Report: iPhone or iGo (to the gym)"
 date: "`r Sys.Date()`"
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "Reports") })
 output:
   rmdformats::readthedown:
     highlight: kate

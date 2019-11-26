@@ -2,6 +2,8 @@
 title: "Project Proposal"
 author: "Griffin Barich"
 date: "11/01/2019"
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "Reports") })
 output:
   html_document:
     df_print: paged
