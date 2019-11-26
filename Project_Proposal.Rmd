@@ -1,0 +1,84 @@
+---
+title: "Project Proposal"
+author: "Griffin Barich"
+date: "11/01/2019"
+output:
+  html_document:
+    df_print: paged
+    code_folding: "show"
+---
+
+### Introduction Section: 
+
+For QAC 307, I decided to focus on the impact of exercise on smartphone use in myself. I realized that I am constantly on my phone and use it whenever I am bored or nervous. I also independently took on the hypothesis that exercise will reduce general boredness/nervousness. Through the synthesis of these two concepts, I came up with this experiment. I knew that the amount of free time I had in a day would be an important factor, so I split the weekdays into 3 groups: Monday/Wednesday, Tuesday/Thursday, and the Weekend. This became my blocking variable. 
+
+### Methods section: 
+##### 1. Type of Study: 
+Experimental 
+
+##### 2. Units:
+
+Treatments assigned using the using the method below:
+```{r, echo=F, message=F}
+source("Final Project/Assignment of Experiment.R")
+library(dplyr)
+library(randomizr)
+```
+
+1: Get Dates and Days of Week
+```{r,eval=F}
+dates <- seq(as.Date("2019-10-10"), as.Date("2019-11-25"), 1)
+weekdays <- weekdays(dates)
+df <- data.frame(dates, weekdays)
+```
+
+2: Sort Weekdays into Blocks
+```{r,eval=F}
+df$DayType <- ifelse(df$weekdays %in% c("Monday", "Wednesday"), "MW",
+  ifelse(df$weekdays %in% c("Tuesday", "Thursday"), "TT",
+  "FSS"))
+```
+
+3: Remove Fall Break and Drop Weekdays
+```{r,eval=F}
+"%!in%" <- function(x, y) !("%in%"(x, y))
+
+df <- df %>%
+  filter(dates %!in% seq(as.Date("2019-10-17"), as.Date("2019-10-21"), 1)) %>%
+  select(-weekdays)
+```
+
+Use `randomizr` package to randomize with blocking (setting a seed)
+```{r,eval=F}
+set.seed(1234)
+Z <- block_ra(blocks = df$DayType)
+
+df$ex <- Z
+df$ex[df$dates == "2019-11-15"] <- 1
+df$ex[df$dates == "2019-11-16"] <- 0
+```
+
+Note that I did switch two dates due to a previous commitment. We still see that the distribution of treatment over the levels is even (since there are more days in the "FSS" group, there are more instances of exercise).
+```{r, echo=F}
+knitr::kable(table(factor(df$ex, labels=c("Exercise", "Rest")), df$DayType))
+knitr::kable(table(factor(df$ex, labels=c("Exercise", "Rest")), weekdays.Date(df$dates)))
+```
+
+From the table above, we see that the distribution of exercise by weekday is not equal so it will not be a great blocking variable.
+
+
+##### 3. Conditions: Describe the treatment conditions.
+
+Treatment is me going to the gym for at least 25 minutes and being "active" while there, whatever that means to me on that day. I will admit this is a less robust portion of the experiment, but since I am recording how long I spend at the gym each time (using my calendar), it will be evident if this is a confounding variable in my final analysis.
+
+##### 4. Response Variables: provide definitions, methods of measurement, and how you will guarantee reliability of your measurements.
+
+My response variable is the number of times I pickup my phone in a day. Apple's Screen Time feature measures this for me. Apple's website describes it as "how many times you picked up your iPhone", and nothing more. [Link](https://support.apple.com/en-us/HT210387).
+
+##### 5. Statistical analysis: Name the design you will use. Describe the factor structure of the data.
+
+Randomized Design with Blocks, I will use ANOVA and regression to show if there is a relationship between pickups and exercise controlling for day of week. I will possibly also add in data about duration at the gym and time going to the gym.
+
+##### 6. Data Collection From:
+
+I made a calendar event each day where I record the number of pickupsm collecting between 11:30 PM and 11:59 PM. Gym times were assigned at the beginning of the experiment and have been updated to reflect my actual time at the gym.
