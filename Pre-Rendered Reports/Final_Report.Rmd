@@ -1,8 +1,8 @@
 ---
 title: "Final Report: iPhone or iGo (to the gym)"
-date: "`r Sys.Date()`"
+date: "2019-12-12"
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "Reports") })
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Reports") })
 output:
   rmdformats::readthedown:
     highlight: kate
@@ -13,10 +13,11 @@ output:
 ```{r knitr_init, echo=FALSE, cache=FALSE}
 library(knitr)
 library(rmdformats)
+library(kableExtra)
 
 ## Global options
 options(max.print="75")
-opts_chunk$set(#echo=FALSE,
+opts_chunk$set(echo=FALSE,
 	             cache=FALSE,
                prompt=FALSE,
                tidy=TRUE,
@@ -26,58 +27,126 @@ opts_chunk$set(#echo=FALSE,
 opts_knit$set(width=75)
 ```
 
-```{r load_packages, echo=F}
-
+```{r load_packages, echo=F, message=F, warning=F}
+source("../Code:Data/00_Assignment_of_Experiment.R")
+#source("../Code:Data/01_Data_Management.R")
+#source("../Code:Data/02_Data_Analysis.R")
+source("../Code:Data/03_Visualizations.R")
 ```
 
 ## Introduction
 
+For *QAC 307*, I decided to focus on the impact of exercise on smartphone use in myself. I realized that I am constantly on my phone and use it whenever I am bored or nervous. I also independently took on the hypothesis that exercise will reduce general boredness/nervousness. Through the synthesis of these two concepts, I came up with this experiment: measuring the impact of going to the gym on the amount of times I pickup my smartphone. I knew that the amount of free time I had in a day would be an important factor, so I split the weekdays into 3 groups: Monday/Wednesday, Tuesday/Thursday, and the Weekend, as these correspond to my classes. This became my blocking variable. Going into this experiment, I hypothesized that I would be unable to reject the null hypothesis that exercise influences pickups in myself. I found that there is a small effect, but with many caveats.
 
 ## Methods
 
+
 ### Sample
+
+In this study, I looked at the number of pickups on my phone per day from October 10 to November 26 as the units for this experiment. These were all days where school was in session and there were no major religious holidays.
 
 ### Procedure
 
+Each day was randomly assigned to be a gym day or a rest day using the *randomizr* package. This package allowed me to randomize in blocks by the day type (my blocking variable). The full code can be seen below in the appendix or in the file __00_Assignment_of_Experiment.R__. We see in the table below that exercise is evenly distributed over the day types, so our blocking was successful. One note about this randomization is that due to scheduling, I switched the assignment of November 15th and 16th. This did not affect my distribution though.
+
+```{r blocking_table, echo=F}
+kable(blocking_tab)
+```
 
 ### Measures
 
+Pickups were measured using Apple's Screen Time Feature. Apple describes this feature as  [how often devices are picked up](https://support.apple.com/en-us/HT209084). They have been very secretive in how pickups are measured but according to [this](https://apple.stackexchange.com/questions/338123/what-are-pickups-in-the-screen-time-report) source, it only tallies when one interacts with the screen. Pickups were measured using Apple's numbers between 11:30 PM and 11:59 PM of the day and recorded in a repeated calendar event. This was done using Screen Time on iOS 12.4.2. Gym times were also scheduled in advance, but subject to change due to scheduling and personal preference. I made sure that I went to the gym for at least 30 minutes and no more than 1 hour, recording in the calendar event the time spent at the gym (rounded to the nearest 10 minutes) and the time I went to the gym (to see if these possibly accounted for some of the variance in pickups). After the experiment was over, I manually inputted all of the data points so as not to affect the experiment during. Doing this, I noticed that I forgot to input two of the days, both on a Wednesday, one with exercise and one without.
+
+
 ## Results
 
+Looking at the results, it makes sense to look and see if exercise had a different effect on pickups by day type to see if interaction is something to look for. Looking at the graph below, we see a small effect from day type, a decent effect from exercise, and a small interaction effect.
+
+```{r interaction_plot, echo=F}
+interaction_plot
+```
+
+Since we have unequal groups (more days in the FSS group), then ANOVA makes less sense to do. I instead look at a regression of pickups on exercise and DayType. After adjusting for Day Type and interaction effects, exercise was significantly and positively associated with pickups (Estimate = 21.4, p=0.359).
+
+```{r linear_fit, echo=F}
+s_block
+```
+
+Looking at the assumptions of the test, we see that homogeneity of variance does not rigorously hold when the fitted values are small, so any conclusions come with this caveat. Normality of Residuals holds as shown by the qq plot.
+
+```{r,out.width=c('50%', '50%'), fig.show='hold', echo=F}
+plot(lm_block, c(1,2))
+```
+
+When we look at serial correlation, we see a very slight but not significant effect. Running a regression, we see an estimate of -0.27 per day with a p-value of 0.142.
+
+```{r}
+ser_cor
+```
+
+Taking this into account, we see virtually no difference in the output of the regression.
+
+```{r}
+s_block_2
+```
+
+When we change our output to be the numeric variable length, we see the same story with slightly larger estimate and smaller p_value (Estimate = 24.3, p = 0.0284). This makes sense since exercise is directly predicted by length (exercise is 1 where length is greater than 0).
+
+```{r}
+s_length
+```
+
+We still see a large variation in the effects when looking at the regression by day type.
+
+```{r}
+reg
+```
+
+
+For the purposes of good interpolation, I also looked at the effect of length of exercise on pickups on only the days I did exercise, but there was no significant effect found (p=0.9). 
+
+
+
 ## Discussion
+
+This experiment shows that Griffin Barich will pick up his phone more on days in which he goes to the gym. This is a study with numerous problems detailed below.
+
+### Effect Length and Size
+
+As anyone who has been to the gym can tell you, the effects do not happen right away. While picking up my phone is not the same as losing weight or gaining muscle, it would be naïve to assume that my response variable is an immediate effect. In a further experiment, it might be effective to look at pickups over a whole week where weeks are all assigned different amounts of exercise.
+
+Due to general busyness, I was purposefully vague on the requirements of my exercise. In future studies, it would be beneficial to set specific requirements about time of day and exercise.
+
+### Low Variance of Residuals and Measurement Error
+
+As was mentioned above, we saw an issue in the assumption of homogeneity of variance. This could likely be solved by a larger sample size and more careful measurement.
+
+Measurement would be improved if Apple allowed the user to keep historical Screen Time data and export it. With this, we wouldn't lose the pickups that happen from 11:30 on. There is also merit in changing the way pickups are measured since I was going to sleep around 1 AM and waking up around 9:30 AM. 2 hours of pickups were being misattributed to the following days.
+
+### Internal and External Validity
+
+There are also issues with the internal validity of the experiment. Personally, the responsibilities that I had first semester senior year were unlike any other time in my life. Since I was more busy with extra curriculars and classes, this is not a representative sample of my life and may not be applicable to other times in my life. If I repeated this experiment next semester or even next year, then I would likely see different results. There were also a few days on which I travelled and so could not use my phone due to me driving. These problems cause me to question the results of the experiment.
+
+The largest problem with this experiment though, is that it is not externally valid. Since the population is only myself, there is no way I can extrapolate this data for any other people. In a future experiment, I would try and get a larger sample population to increase the breadth of the study.
+
+### Conclusions
+
+While this experiment has many issues, the effect is still present. In a future experiment, I would use this study as a baseline to get the effect size and standard deviations to design a new study. The problems of internal and external validity make this hard to draw solid, actionable conclusions off of, but give some idea of the effect during the time of the experiment.
 
 ## Appendix
 
 Assignment of Experiment Code:
-```{r, eval=FALSE}
-# Randomly Assigning Days for Exercise:
-library(dplyr)
-library(randomizr)
-
-dates <- seq(as.Date("2019-10-10"),as.Date("2019-11-25"),1)
-weekdays <- weekdays(dates)
-
-df <- data.frame(dates,weekdays)
-
-df$DayType <- ifelse(df$weekdays %in% c("Monday", "Wednesday"), "MW", 
-                     ifelse(df$weekdays %in% c("Tuesday", "Thursday"), "TT",
-                            "FSS"))
-'%!in%' <- function(x,y)!('%in%'(x,y))
-df <- df %>% filter(dates %!in% seq(as.Date("2019-10-17"),as.Date("2019-10-21"),1)) %>% select(-weekdays)
-
-
-set.seed(1234)
-Z <- block_ra(blocks=df$DayType)
-table(Z, df$DayType)
-
-df$ex <- Z
-df$ex[df$dates=='2019-11-15'] <- 1
-df$ex[df$dates=='2019-11-16'] <- 0
-
-df$pickups <- NA
-
+```{r,echo=T, eval=FALSE,code = readLines("../Code:Data/00_Assignment_of_Experiment.R")}
 ```
 
+Data Management Code:
+```{r,echo=T, eval=FALSE,code = readLines("../Code:Data/01_Data_Management.R")}
+```
 
-C
+Analysis Code:
+```{r,echo=T, eval=FALSE,code = readLines("../Code:Data/02_Data_Analysis.R")}
+```
 
+Visualizations Code:
+```{r,echo=T, eval=FALSE,code = readLines("../Code:Data/03_Visualizations.R")}
+```

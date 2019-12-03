@@ -1,19 +1,30 @@
 # Data Analysis
-source("01_Data_Management.R")
-model_base <- aov(pickups~ex, data=data)
-summary(model_base)
+source("~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Code:Data/01_Data_Management.R")
+library(jtools)
 
-lm_base <- lm(pickups~ex, data=data)
-summary(lm_base)
-
-model_block <- aov(pickups~ex*DayType, data=data)
-summary(model_block)
-
+# Linear Regression with Blocking and Interaction
 lm_block <- lm(pickups~ex*DayType, data=data)
 summary(lm_block)
+s_block <- summ(lm_block, digits=3)
 
-model_length <- aov(pickups~length, data=data)
-summary(model_length)
+# Check Serial Correlation
+lm_serial <- lm(pickups~dates, data=data)
+summary(lm_serial)
+s_serial <- summ(lm_serial, digits=3)
 
-lm_length <- lm(pickups~length, data=data)
+# Include Serial Correlation in Model
+lm_block_2 <- lm(pickups~ex*DayType + dates, data=data)
+summary(lm_block_2)
+s_block_2 <- summ(lm_block_2, digits=3)
+
+# Use Length at Gym instead of Binary Indicator 
+lm_length <- lm(pickups~length*DayType + dates, data=data)
 summary(lm_length)
+s_length <- summ(lm_length, digits=3)
+
+# Look at only Gym Days
+lm_length_ex <- lm(pickups~length*DayType, data=data[data$ex==1,])
+summary(lm_length_ex)
+s_length_ex <- summ(lm_length_ex)
+
+

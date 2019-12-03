@@ -1,6 +1,6 @@
 # Reading and Cleaning the Data
 library(readr)
-data <- read_csv("data.csv",
+data <- read_csv("~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Code:Data/data.csv",
   col_types = cols(
     DayType = col_factor(levels = c("MW","TT", "FSS")), 
     X1 = col_skip(), 

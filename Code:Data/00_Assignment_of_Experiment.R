@@ -16,7 +16,8 @@ df <- df %>% filter(dates %!in% seq(as.Date("2019-10-17"),as.Date("2019-10-21"),
 
 set.seed(1234)
 Z <- block_ra(blocks=df$DayType)
-table(Z, df$DayType)
+blocking_tab <- table(Z, factor(df$DayType, ordered = T,levels = c("MW","TT","FSS")))
+
 
 df$ex <- Z
 df$ex[df$dates=='2019-11-15'] <- 1

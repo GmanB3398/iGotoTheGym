@@ -3,7 +3,7 @@ title: "Project Proposal"
 author: "Griffin Barich"
 date: "11/01/2019"
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "Reports") })
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Reports") })
 output:
   html_document:
     df_print: paged
@@ -22,7 +22,7 @@ Experimental
 
 Treatments assigned using the using the method below:
 ```{r, echo=F, message=F}
-source("Final Project/Assignment of Experiment.R")
+source("../Code:Data/00_Assignment_of_Experiment.R")
 library(dplyr)
 library(randomizr)
 ```
