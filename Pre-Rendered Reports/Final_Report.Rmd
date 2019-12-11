@@ -60,6 +60,8 @@ Pickups were measured using Apple's Screen Time Feature. Apple describes this fe
 
 ## Results
 
+### Initial Results
+
 Looking at the results, it makes sense to look and see if exercise had a different effect on pickups by day type to see if interaction is something to look for. Looking at the graph below, we see a small effect from day type, a decent effect from exercise, and a small interaction effect.
 
 ```{r interaction_plot, echo=F}
@@ -71,6 +73,8 @@ Since we have unequal groups (more days in the FSS group), then ANOVA makes less
 ```{r linear_fit, echo=F}
 s_block
 ```
+
+### Assumptions
 
 Looking at the assumptions of the test, we see that homogeneity of variance does not rigorously hold when the fitted values are small, so any conclusions come with this caveat. Normality of Residuals holds as shown by the qq plot.
 
@@ -84,11 +88,15 @@ When we look at serial correlation, we see a very slight but not significant eff
 ser_cor
 ```
 
+### Results with Serial Correlation
+
 Taking this into account, we see virtually no difference in the output of the regression.
 
 ```{r}
 s_block_2
 ```
+
+### Results with Numeric Response Variable
 
 When we change our output to be the numeric variable length, we see the same story with slightly larger estimate and smaller p_value (Estimate = 24.3, p = 0.0284). This makes sense since exercise is directly predicted by length (exercise is 1 where length is greater than 0).
 
@@ -102,10 +110,25 @@ We still see a large variation in the effects when looking at the regression by 
 reg
 ```
 
+### Further Analyses
+
+#### Interpolation
 
 For the purposes of good interpolation, I also looked at the effect of length of exercise on pickups on only the days I did exercise, but there was no significant effect found (p=0.9). 
 
+#### Non-Linearity
 
+We don't see any significant non-linearity when we look at length with a second order term (p>0.05). Looking at the serial correlation though, we see possible non-linearity.
+```{r, warning=F, message=F}
+ser_cor2+
+  ggtitle("Pickups by Dates fitted with 2nd Order Line")
+```
+
+Adding to the model:
+```{r}
+s_block_22
+```
+We see above that this squared term explains a bit more the variance in the data, giving a slightly higher R-squared and adjusted R-squared.
 
 ## Discussion
 
@@ -113,9 +136,11 @@ This experiment shows that Griffin Barich will pick up his phone more on days in
 
 ### Effect Length and Size
 
-As anyone who has been to the gym can tell you, the effects do not happen right away. While picking up my phone is not the same as losing weight or gaining muscle, it would be naïve to assume that my response variable is an immediate effect. In a further experiment, it might be effective to look at pickups over a whole week where weeks are all assigned different amounts of exercise.
+As anyone who has been to the gym can tell you, the effects do not happen right away. While picking up my phone is not the same as losing weight or gaining muscle, it would be naïve to assume that my response variable is an immediate effect. The effect is more pronounced in this experimemnt since I had been going to the gym fewer than one time a week. This is partly modelled by the non-linear serial term, but would need to be remedied further. It might be effective to look at pickups over a whole week where weeks are all assigned different amounts of exercise. 
 
 Due to general busyness, I was purposefully vague on the requirements of my exercise. In future studies, it would be beneficial to set specific requirements about time of day and exercise.
+
+While I looked at length at the gym as a possible predictor of pickups, since length did not have much distribution, we cannnot predict from more granular values of length than 30 minutes and cannot predict past 60 minutes because it would be extrapolation.
 
 ### Low Variance of Residuals and Measurement Error
 
@@ -125,7 +150,7 @@ Measurement would be improved if Apple allowed the user to keep historical Scree
 
 ### Internal and External Validity
 
-There are also issues with the internal validity of the experiment. Personally, the responsibilities that I had first semester senior year were unlike any other time in my life. Since I was more busy with extra curriculars and classes, this is not a representative sample of my life and may not be applicable to other times in my life. If I repeated this experiment next semester or even next year, then I would likely see different results. There were also a few days on which I travelled and so could not use my phone due to me driving. These problems cause me to question the results of the experiment.
+There are also issues with the internal validity of the experiment. Personally, the responsibilities that I had first semester senior year were unlike any other time in my life. Since I was more busy with extra-curriculars and classes, this is not a representative sample of my life and may not be applicable to other times in my life. If I repeated this experiment next semester or even next year, then I would likely see different results. There were also a few days on which I travelled and so could not use my phone due to me driving. These problems cause me to question the results of the experiment.
 
 The largest problem with this experiment though, is that it is not externally valid. Since the population is only myself, there is no way I can extrapolate this data for any other people. In a future experiment, I would try and get a larger sample population to increase the breadth of the study.
 
@@ -150,3 +175,6 @@ Analysis Code:
 Visualizations Code:
 ```{r,echo=T, eval=FALSE,code = readLines("../Code:Data/03_Visualizations.R")}
 ```
+
+Data in csv form can be found in the iGototheGym Repository on Github [here](https://github.com/GmanB3398/iGotoTheGym).
+

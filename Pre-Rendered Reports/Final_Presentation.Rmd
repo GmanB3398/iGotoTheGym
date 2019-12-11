@@ -5,35 +5,153 @@ date: "12/10/19"
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = "~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Reports") })
 output:
-  powerpoint_presentation: default
-  ioslides_presentation: default
+  ioslides_presentation: 
+    logo: Logo.png
+    css: css.css
+    transition: faster
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, warning = F, message=F)
+source("~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Code:Data/00_Assignment_of_Experiment.R")
+source("~/Documents/Documents - Griffin’s MacBook Pro/Senior Year/Fall_2019/Experimental Design/iGotoTheGym/Code:Data/03_Visualizations.R")
 ```
 
-## R Markdown
+## Project Decription
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This project focuses on the impact of exercise on smartphone use. This project was movitated by:
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+- Lots of Smartphone Use
 
-## Slide with Bullets
+- Available data
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+- Desire to go to the gym
 
-## Slide with R Output
 
-```{r cars, echo = TRUE}
-summary(cars)
+## Research Question
+
+__Will going to the gym affect the amount of times I pickup my phone in a day?__
+
+
+
+## Measures {.build}
+
+### Response Variable
+
+>- Apple defined
+
+>- Recorded around same time every day
+
+### Treatment Variable
+
+>- Went to Freeman for 30-60 minutes
+
+>- Assigned at the beginning of the experiment (`randomizr` package)
+
+>- Time of Day and length at gym recorded using calendar event.
+
+## Measures (cont.) {.build}
+
+### Blocking
+
+>- Day types
+>- Randomized with Blocking using `randomizr`.
+
+```{r blocking_table, echo=F}
+kable(blocking_tab)
 ```
 
-## Slide with Plot
+## Data Description {.smaller}
 
-```{r pressure}
-plot(pressure)
+- 42 Observations (2 missing), 5 Variables
+
+- Day Type and Time of Day Recorded
+
+```{r}
+pickup_hist +
+  geom_histogram(fill="firebrick", bins=10)+
+  ggtitle("Histogram of Pickups")
 ```
+
+## Data Description
+
+```{r}
+pickup_hist +
+  geom_histogram(fill="firebrick", bins=10)+
+  facet_grid(.~ex)+
+  ggtitle("Pickups by Treatment Days")
+```
+
+## Data Description
+
+```{r}
+interaction_plot
+```
+
+
+## Results {.codefont}
+```{r}
+summary(lm_block)
+```
+
+## Checking Assumptions
+
+```{r,fig.show='hold', echo=F}
+plot(lm_block, 1)
+```
+
+## Checking Assumptions
+```{r,fig.show='hold'}
+plot(lm_block, 2)
+```
+
+## Serial Correlation
+```{r}
+ser_cor
+```
+
+## Results with Serial Correlation {.codefont}
+```{r}
+summary(lm_block_2)
+```
+<div class="notes">
+Total of 10 times fewer due to dates
+</div>
+## Results with Length {.codefont}
+```{r}
+summary(lm_length)
+```
+
+## Results
+```{r}
+reg
+```
+
+
+## Discussion {.build}
+
+>- Lasting Effects?
+
+>- Variance of Lengths (Interpolation?)
+
+>- Time of Day
+
+## Validity {.build}
+
+### Internal
+
+>- Representative Time?
+
+>- Travelling
+
+### External
+
+>- Sample Size of One
+
+## Conclusions
+
+There was a significant effect on pickups as a result of going to the gym. While there are issues with the experiment, we do see a causal relationship.
+
+# Thank You
 
